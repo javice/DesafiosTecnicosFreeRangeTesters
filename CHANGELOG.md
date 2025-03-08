@@ -13,10 +13,17 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.
 
 ---
 
-## [1.0.0] - 2023-10-01
+## [1.0.0] - 2025-03-07
 
 ### Añadido
 - Proyecto inicial con pruebas automatizadas para la página de Rick and Morty.
 - Implementación del patrón Page Object Model (POM).
 - Pruebas de frontend y backend.
 - Configuración de GitHub Actions para CI.
+
+## [1.1.0] - 2025-03-07
+
+### Añadido
+- Archivos formPage.ts y formTests.spec.ts.
+- Pruebas de formularios.
+- Dichos archivos se corresponden con el desafío de febrero de Free Range Testers.
