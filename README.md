@@ -1,6 +1,6 @@
 # Proyecto de Pruebas Automatizadas con Playwright y POM
 
-Este proyecto utiliza **Playwright** y el patrón de diseño **Page Object Model (POM)** para realizar pruebas automatizadas en la página de [Rick and Morty](https://v0-rick-and-morty-api-six.vercel.app/?status=alive). 
+Este proyecto utiliza ![Playwright](https://img.shields.io/badge/-Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white) y el patrón de diseño **Page Object Model (POM)** para realizar pruebas automatizadas en la página de [Rick and Morty](https://v0-rick-and-morty-api-six.vercel.app/?status=alive). 
 Las pruebas validan tanto el frontend como el backend, asegurando que los filtros, la búsqueda y la visualización de datos funcionen correctamente.
 Asimismo, este repositorio será el punto de partida para en sucesivas actualizaciones, ir subiendo el resto de desafíos técnicos que se nos propongan desde la página de [Free Range Testers](https://www.freerangetesters.com)
 Igualmente, se actualizarán los comandos del Makefile para ejecutar únicamente los tests de cada desafío
