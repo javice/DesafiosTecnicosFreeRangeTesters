@@ -67,72 +67,74 @@ async function compareAPIWithFrontend(page: any, url: string, apiCount: number, 
     }
 }
 
-test('Verificar que la data del FrontEnd coincide con el BackEnd para status DEAD', async ({ request, page }) => {
-    console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status DEAD.${NC}`);
+test.describe('Desafio FRT Marzo 2025', () => {
+    test('Verificar que la data del FrontEnd coincide con el BackEnd para status DEAD', async ({ request, page }) => {
+        console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status DEAD.${NC}`);
 
-    const deadCharacters = await fetchAndValidateAPI(request, requestChainDead, 'dead');
-    expect(deadCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
-    if (deadCharacters.info.count > 0) {
-        console.log(`${GREEN}La solicitud GET tiene ${deadCharacters.info.count} personajes.${NC}`);
-    }
-    await validateCharacterFields(deadCharacters.results[0]);
-    await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=dead', deadCharacters.info.count, 'dead');
-    console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
-});
+        const deadCharacters = await fetchAndValidateAPI(request, requestChainDead, 'dead');
+        expect(deadCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
+        if (deadCharacters.info.count > 0) {
+            console.log(`${GREEN}La solicitud GET tiene ${deadCharacters.info.count} personajes.${NC}`);
+        }
+        await validateCharacterFields(deadCharacters.results[0]);
+        await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=dead', deadCharacters.info.count, 'dead');
+        console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+    });
 
-test('Verificar que la data del FrontEnd coincide con el BackEnd para status UNKNOWN', async ({ request, page }) => {
-    console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status UNKNOWN.${NC}`);
-    const unknownCharacters = await fetchAndValidateAPI(request, requestChainUnknown, 'unknown');
-    expect(unknownCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
-    if (unknownCharacters.info.count > 0) {
-        console.log(`${GREEN}La solicitud GET tiene ${unknownCharacters.info.count} personajes.${NC}`);
-    }
-    await validateCharacterFields(unknownCharacters.results[0]);
-    await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=unknown', unknownCharacters.info.count, 'unknown');
-    console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
-});
+    test('Verificar que la data del FrontEnd coincide con el BackEnd para status UNKNOWN', async ({ request, page }) => {
+        console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status UNKNOWN.${NC}`);
+        const unknownCharacters = await fetchAndValidateAPI(request, requestChainUnknown, 'unknown');
+        expect(unknownCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
+        if (unknownCharacters.info.count > 0) {
+            console.log(`${GREEN}La solicitud GET tiene ${unknownCharacters.info.count} personajes.${NC}`);
+        }
+        await validateCharacterFields(unknownCharacters.results[0]);
+        await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=unknown', unknownCharacters.info.count, 'unknown');
+        console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+    });
 
-test('Verificar que la data del FrontEnd coincide con el BackEnd para status ALIVE', async ({ request, page }) => {
-    console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status ALIVE.${NC}`);
+    test('Verificar que la data del FrontEnd coincide con el BackEnd para status ALIVE', async ({ request, page }) => {
+        console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status ALIVE.${NC}`);
 
-    const aliveCharacters = await fetchAndValidateAPI(request, requestChainAlive, 'alive');
-    expect(aliveCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
-    if (aliveCharacters.info.count > 0) {
-        console.log(`${GREEN}La solicitud GET tiene ${aliveCharacters.info.count} personajes.${NC}`);
-    }
-    await validateCharacterFields(aliveCharacters.results[0]);
-    await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=alive', aliveCharacters.info.count, 'alive');
-    console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
-});
+        const aliveCharacters = await fetchAndValidateAPI(request, requestChainAlive, 'alive');
+        expect(aliveCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
+        if (aliveCharacters.info.count > 0) {
+            console.log(`${GREEN}La solicitud GET tiene ${aliveCharacters.info.count} personajes.${NC}`);
+        }
+        await validateCharacterFields(aliveCharacters.results[0]);
+        await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?status=alive', aliveCharacters.info.count, 'alive');
+        console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+    });
 
-test('Verificar que la data del FrontEnd coincide con el BackEnd para status Rick Sánchez y ALIVE', async ({ request, page }) => {
-    console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status Rick Sánchez y ALIVE.${NC}`);
+    test('Verificar que la data del FrontEnd coincide con el BackEnd para status Rick Sánchez y ALIVE', async ({ request, page }) => {
+        console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para status Rick Sánchez y ALIVE.${NC}`);
 
-    const aliveRickCharacters = await fetchAndValidateAPI(request, requestChainRickAlive, 'alive');
-    expect(aliveRickCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
-    if (aliveRickCharacters.info.count > 0) {
-        console.log(`${GREEN}La solicitud GET tiene ${aliveRickCharacters.info.count} personajes.${NC}`);
-    }
-    await validateCharacterFields(aliveRickCharacters.results[0]);
-    await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?name=Rick+Sanchez&status=alive', aliveRickCharacters.info.count, 'alive');
-    console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
-});
+        const aliveRickCharacters = await fetchAndValidateAPI(request, requestChainRickAlive, 'alive');
+        expect(aliveRickCharacters.info.count, `${RED}Error: No se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
+        if (aliveRickCharacters.info.count > 0) {
+            console.log(`${GREEN}La solicitud GET tiene ${aliveRickCharacters.info.count} personajes.${NC}`);
+        }
+        await validateCharacterFields(aliveRickCharacters.results[0]);
+        await compareAPIWithFrontend(page, 'https://v0-rick-and-morty-api-six.vercel.app/?name=Rick+Sanchez&status=alive', aliveRickCharacters.info.count, 'alive');
+        console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+    });
 
-test('Verificar que la data del FrontEnd coincide con el BackEnd para consulta falsa', async ({ request }) => {
-    console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para consulta falsa.${NC}`);
+    test('Verificar que la data del FrontEnd coincide con el BackEnd para consulta falsa', async ({ request }) => {
+        console.log(`${CYAN} TEST: Verificar que la data del FrontEnd coincide con el BackEnd para consulta falsa.${NC}`);
 
-    const falseResponse = await request.get(requestChainFalse);
-    expect(falseResponse.status(), `${RED}Error: La solicitud GET no encontró personajes.${NC}`).toBe(404);
-    if (falseResponse.status() === 404) {
-        console.log(`${GREEN}La solicitud GET FALSA fue exitosa.${NC}`);
-    }
-    console.log(`${CYAN}===========================================================${NC}`);
-    const falseCharacters = await falseResponse.json();
-    expect(falseCharacters.error.length, `${RED}Error: Se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
-    if (falseCharacters.error.length === 1) {
-        console.log(`${GREEN}La solicitud GET no tiene personajes.${NC}`);
-        console.log(`${GREEN}${falseCharacters.error}.${NC}`);
-    }
-    console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+        const falseResponse = await request.get(requestChainFalse);
+        expect(falseResponse.status(), `${RED}Error: La solicitud GET no encontró personajes.${NC}`).toBe(404);
+        if (falseResponse.status() === 404) {
+            console.log(`${GREEN}La solicitud GET FALSA fue exitosa.${NC}`);
+        }
+        console.log(`${CYAN}===========================================================${NC}`);
+        const falseCharacters = await falseResponse.json();
+        expect(falseCharacters.error.length, `${RED}Error: Se encontraron personajes en la respuesta.${NC}`).toBeGreaterThan(0);
+        if (falseCharacters.error.length === 1) {
+            console.log(`${GREEN}La solicitud GET no tiene personajes.${NC}`);
+            console.log(`${GREEN}${falseCharacters.error}.${NC}`);
+        }
+        console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
+    });
 });
 
