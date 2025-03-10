@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, test } from '@playwright/test';
 
 class CharacterPage {
     page: Page;
@@ -29,11 +29,13 @@ class CharacterPage {
 
     async navigateCharacter(url: string): Promise<void> {
         await this.page.goto(url);
+        test.info().annotations.push({type: 'info', description: '🌏 Navegamos a la URL de personaje: ' + url});
         await this.page.waitForLoadState('networkidle')
     }
 
     async navigateBack(): Promise<void> {
         const homeUrl = await this.btnBack.getAttribute("href")
+        test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la URL'});
         await this.btnBack.click();
     }
 

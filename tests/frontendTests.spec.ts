@@ -57,6 +57,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
             await characterPageInstance.navigateCharacter(baseURI+firstCharacterLink);
             const characterDetails = await characterPageInstance.getCharacterDetails();
             expect(characterDetails.name, `${RED} ERROR!! No hay detalles del personaje${NC}`).toBeTruthy();
+
             console.log(`${CYAN}DETALLES DE ${characterDetails.name}${NC}`);
             console.log(`${GREEN}ESTADO:${characterDetails.status}${NC}`);
             console.log(`${GREEN}RAZA:${characterDetails.species}${NC}`);
@@ -67,6 +68,18 @@ test.describe('Desafio FRT Marzo 2025', () => {
             console.log(`${GREEN}EPISODIOS:${characterDetails.episodes}${NC}`);
             console.log(`${GREEN}FECHA CREACIÓN:${characterDetails.creationDate}${NC}`);
             console.log(`${RED}===== VOLVEMOS A LA HOME PAGE =======${NC}`);
+
+            test.info().annotations.push({type:'info', description: `ℹ️ DETALLES DE: ${characterDetails.name}`});
+            test.info().annotations.push({type:'info', description: `📊 ESTADO: ${characterDetails.status}`});
+            test.info().annotations.push({type:'info', description: `👽 RAZA: ${characterDetails.species}`});
+            test.info().annotations.push({type:'info', description: `🏞️ LOCALIZACIÓN: ${characterDetails.location}`});
+            test.info().annotations.push({type:'info', description: `🌎 ORÍGEN: ${characterDetails.origin}`});
+            test.info().annotations.push({type:'info', description: `🧬 GÉNERO: ${characterDetails.gender}`});
+            test.info().annotations.push({type:'info', description: `🌠 IMÁGEN: ${characterDetails.image}`});
+            test.info().annotations.push({type:'info', description: `🎬 EPISODIOS: ${characterDetails.episodes}`});
+            test.info().annotations.push({type:'info', description: `🐣 FECHA CREACIÓN: ${characterDetails.creationDate}`});
+            test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la Home Page'});
+
             await characterPageInstance.navigateBack();
             console.log(`${GREEN}Volvimos a la Home Page${NC}`);
             console.log(`${CYAN}====== FIN DEL STEP 3 - Ver detalles de un personaje y navegar de vuelta a la Home Page ======${NC}`);

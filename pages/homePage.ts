@@ -1,4 +1,4 @@
-import {Page, Locator} from '@playwright/test';
+import {Page, Locator, test} from '@playwright/test';
 
 
 class HomePage {
@@ -24,13 +24,17 @@ class HomePage {
 
     async navigate(url:string): Promise<void> {
         await this.page.goto(url);
+        test.info().annotations.push({type: 'info', description: '🌏 Navegamos a la URL: ' + url});
         await this.page.waitForLoadState('networkidle');
+        if (await this.page.title() === 'Rick and Morty') {
+            test.info().annotations.push({type: 'info', description: '✅ Navegación OK a: ' + url});
+        }
     }
 
     async searchCharacter(name: string): Promise<void> {
         await this.searchInput.fill(name);
-        //await this.filterButton.click();
         await this.page.keyboard.press('Enter');
+        test.info().annotations.push({type: 'info', description: '🔎 Buscamos el personaje: ' + name});
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(1000);
         //await this.page.goto(`https://v0-rick-and-morty-api-six.vercel.app/?name=${name}`)
@@ -44,6 +48,7 @@ class HomePage {
         const optionLocator = this.page.locator(`div[role="option"]:has-text("${status}")`);
         await optionLocator.click();
         await this.filterButton.click();
+        test.info().annotations.push({type: 'info', description: '🔎 Filtramos por estado: ' + status});
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(1000);
 
@@ -52,8 +57,10 @@ class HomePage {
     async getCharacterCount(): Promise<number> {
         const {totalPages } = await this.getPageNumbers();
         if (totalPages == 1){
+            test.info().annotations.push({type: 'info', description: '💯 Obtenemos el total de personajes: ' + await this.characterCards.count()});
             return await this.characterCards.count();
         }else{
+            test.info().annotations.push({type: 'info', description: '💯 Obtenemos el total de personajes: ' + totalPages*20});
             return totalPages*20;
         }
 
