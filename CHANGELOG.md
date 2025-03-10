@@ -27,3 +27,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.
 - Archivos formPage.ts y formTests.spec.ts.
 - Pruebas de formularios.
 - Dichos archivos se corresponden con el desafío de febrero de Free Range Testers.
+
+## [1.1.1] - 2025-03-10
+
+### Mejoras
+- Se añaden 'annotations' en el reporte HTML para los tests del desafío de marzo.
+- De esta manera se armoniza el contenido del reporte HTML.

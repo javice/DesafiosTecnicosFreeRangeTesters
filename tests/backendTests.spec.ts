@@ -32,6 +32,7 @@ async function fetchAndValidateAPI(request: any, url: string, status: string) {
     expect(response.status(), `${RED}Error: La solicitud GET no fue exitosa.${NC}`).toBe(200);
     if (response.status() === 200) {
         console.log(`${GREEN}La solicitud GET fue exitosa.${NC}`);
+        test.info().annotations.push({type: 'info', description: '✅ La solicitud GET fue exitosa.'});
     }
     console.log(`${CYAN}===========================================================${NC}`);
     return response.json();
@@ -42,6 +43,7 @@ async function compareAPIWithFrontend(page: any, url: string, apiCount: number, 
     await homePage.navigate(url);
     const htmlCharacterCount = await homePage.getCharacterCount();
     const { currentPage, totalPages } = await homePage.getPageNumbers();
+
     console.log(`Página actual: ${currentPage}`);
     console.log(`Total de páginas: ${totalPages}`);
     expect(currentPage).toBeGreaterThan(0);
@@ -49,20 +51,27 @@ async function compareAPIWithFrontend(page: any, url: string, apiCount: number, 
 
     console.log(`${CYAN}API VS FRONTEND. STATUS = ${status.toUpperCase()} ${NC}`);
     console.log(`${GREEN}- Caracteres Totales API: ${apiCount}${NC}`);
+    test.info().annotations.push({type: 'info', description: `✅ STATUS = ${status.toUpperCase()} OK`});
+    test.info().annotations.push({type: 'info', description: `👥 Caracteres Totales API: ${apiCount}`});
 
     if (apiCount > 20) {
         console.log(`${GREEN}- Caracteres Totales FRONTEND: ${totalPages * 20}${NC}`);
+        test.info().annotations.push({type: 'info', description: `👥 Caracteres Totales del Frontend: ${totalPages * 20}`});
         if (apiCount != totalPages * 20) {
             console.log(`${RED}- EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
+            test.info().annotations.push({type: 'error', description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`});
         } else {
             console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
+            test.info().annotations.push({type: 'info', description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`});
         }
     } else {
         console.log(`${GREEN}- Caracteres Totales FRONTEND: ${htmlCharacterCount}${NC}`);
         if (apiCount != htmlCharacterCount) {
             console.log(`${RED}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
+            test.info().annotations.push({type: 'error', description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`});
         } else {
             console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
+            test.info().annotations.push({type: 'info', description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`});
         }
     }
 }
@@ -126,6 +135,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
         expect(falseResponse.status(), `${RED}Error: La solicitud GET no encontró personajes.${NC}`).toBe(404);
         if (falseResponse.status() === 404) {
             console.log(`${GREEN}La solicitud GET FALSA fue exitosa.${NC}`);
+            test.info().annotations.push({type: 'info', description: '✅ La solicitud GET FALSA fue exitosa.'});
         }
         console.log(`${CYAN}===========================================================${NC}`);
         const falseCharacters = await falseResponse.json();
