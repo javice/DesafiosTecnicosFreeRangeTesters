@@ -12,28 +12,34 @@ const requestChainRickAlive = 'https://rickandmortyapi.com/api/character/?name=R
 const requestChainFalse = 'https://rickandmortyapi.com/api/character/?name=Adjudicator+Rick&status=alive';
 
 async function validateCharacterFields(character: any) {
-    expect(character).toHaveProperty('name');
-    expect(character).toHaveProperty('status');
-    expect(character).toHaveProperty('species');
-    expect(character).toHaveProperty('location');
-    expect(character).toHaveProperty('image');
-    expect(character).toHaveProperty('type');
-    expect(character).toHaveProperty('gender');
-    expect(character).toHaveProperty('origin.name');
-    expect(character).toHaveProperty('origin.url');
-    expect(character).toHaveProperty('location.name');
-    expect(character).toHaveProperty('location.url');
-    expect(character).toHaveProperty('url');
+    await test.step('Validar que el personaje tenga los campos requeridos', async () => {
+        expect(character).toHaveProperty('name');
+        expect(character).toHaveProperty('status');
+        expect(character).toHaveProperty('species');
+        expect(character).toHaveProperty('location');
+        expect(character).toHaveProperty('image');
+        expect(character).toHaveProperty('type');
+        expect(character).toHaveProperty('gender');
+        expect(character).toHaveProperty('origin.name');
+        expect(character).toHaveProperty('origin.url');
+        expect(character).toHaveProperty('location.name');
+        expect(character).toHaveProperty('location.url');
+        expect(character).toHaveProperty('url');
+    });
 }
 
 async function fetchAndValidateAPI(request: any, url: string, status: string) {
-    console.log(`${CYAN}======= PETICIÓN A LA API FILTRANDO POR STATUS "${status.toUpperCase()}" =======${NC}`);
     const response = await request.get(url);
-    expect(response.status(), `${RED}Error: La solicitud GET no fue exitosa.${NC}`).toBe(200);
-    if (response.status() === 200) {
-        console.log(`${GREEN}La solicitud GET fue exitosa.${NC}`);
-        test.info().annotations.push({type: 'info', description: '✅ La solicitud GET fue exitosa.'});
-    }
+    await test.step(`Petición a la API filtrando por status "${status.toUpperCase()}"`, async () => {
+        console.log(`${CYAN}======= PETICIÓN A LA API FILTRANDO POR STATUS "${status.toUpperCase()}" =======${NC}`);
+        expect(response.status(), `${RED}Error: La solicitud GET no fue exitosa.${NC}`).toBe(200);
+    });
+    await test.step('Validar que la respuesta sea exitosa', async () => {
+        if (response.status() === 200) {
+            console.log(`${GREEN}La solicitud GET fue exitosa.${NC}`);
+            test.info().annotations.push({type: 'info', description: '✅ La solicitud GET fue exitosa.'});
+        }
+    });
     console.log(`${CYAN}===========================================================${NC}`);
     return response.json();
 }
@@ -41,39 +47,73 @@ async function fetchAndValidateAPI(request: any, url: string, status: string) {
 async function compareAPIWithFrontend(page: any, url: string, apiCount: number, status: string) {
     const homePage = new HomePage(page);
     await homePage.navigate(url);
+
+    await test.step(`Navegamos a la Home Page: ${homePage.page.url()}`, async () => {
+        await expect(page).toHaveTitle('v0 App');
+    });
+
     const htmlCharacterCount = await homePage.getCharacterCount();
     const { currentPage, totalPages } = await homePage.getPageNumbers();
 
+
+    await test.step('Validar que el número de personajes en la página sea correcto', async () => {
+        expect(htmlCharacterCount).toBeGreaterThan(0);
+    });
+
+    await test.step('Validar que el número de páginas sea correcto', async () => {
+        expect(totalPages).toBeGreaterThan(0);
+    });
+
     console.log(`Página actual: ${currentPage}`);
     console.log(`Total de páginas: ${totalPages}`);
-    expect(currentPage).toBeGreaterThan(0);
-    expect(totalPages).toBeGreaterThan(0);
+    //expect(currentPage).toBeGreaterThan(0);
+    //expect(totalPages).toBeGreaterThan(0);
+    test.step('Comparamos el número de personajes de la API con el Frontend', async () => {
+        console.log(`${CYAN}API VS FRONTEND. STATUS = ${status.toUpperCase()} ${NC}`);
+        console.log(`${GREEN}- Caracteres Totales API: ${apiCount}${NC}`);
+        test.info().annotations.push({type: 'info', description: `✅ STATUS = ${status.toUpperCase()} OK`});
+        test.info().annotations.push({type: 'info', description: `👥 Caracteres Totales API: ${apiCount}`});
 
-    console.log(`${CYAN}API VS FRONTEND. STATUS = ${status.toUpperCase()} ${NC}`);
-    console.log(`${GREEN}- Caracteres Totales API: ${apiCount}${NC}`);
-    test.info().annotations.push({type: 'info', description: `✅ STATUS = ${status.toUpperCase()} OK`});
-    test.info().annotations.push({type: 'info', description: `👥 Caracteres Totales API: ${apiCount}`});
-
-    if (apiCount > 20) {
-        console.log(`${GREEN}- Caracteres Totales FRONTEND: ${totalPages * 20}${NC}`);
-        test.info().annotations.push({type: 'info', description: `👥 Caracteres Totales del Frontend: ${totalPages * 20}`});
-        if (apiCount != totalPages * 20) {
-            console.log(`${RED}- EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
-            test.info().annotations.push({type: 'error', description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`});
+        if (apiCount > 20) {
+            console.log(`${GREEN}- Caracteres Totales FRONTEND: ${totalPages * 20}${NC}`);
+            test.info().annotations.push({
+                type: 'info',
+                description: `👥 Caracteres Totales del Frontend: ${totalPages * 20}`
+            });
+            if (apiCount != totalPages * 20) {
+                console.log(`${RED}- EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
+                test.info().annotations.push({
+                    type: 'error',
+                    description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`
+                });
+                console.error(`El número de caracteres en la API y en el frontend no coinciden. API: ${apiCount}, Frontend: ${totalPages * 20}`);
+                test.fail();
+            } else {
+                console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
+                test.info().annotations.push({
+                    type: 'info',
+                    description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`
+                });
+            }
         } else {
-            console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
-            test.info().annotations.push({type: 'info', description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`});
+            console.log(`${GREEN}- Caracteres Totales FRONTEND: ${htmlCharacterCount}${NC}`);
+            if (apiCount != htmlCharacterCount) {
+                console.log(`${RED}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
+                test.info().annotations.push({
+                    type: 'error',
+                    description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`
+                });
+                console.error(`El número de caracteres en la API y en el frontend no coinciden. API: ${apiCount}, Frontend: ${totalPages * 20}`);
+                test.fail();
+            } else {
+                console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
+                test.info().annotations.push({
+                    type: 'info',
+                    description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`
+                });
+            }
         }
-    } else {
-        console.log(`${GREEN}- Caracteres Totales FRONTEND: ${htmlCharacterCount}${NC}`);
-        if (apiCount != htmlCharacterCount) {
-            console.log(`${RED}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} NO COINCIDEN!! --${NC}`);
-            test.info().annotations.push({type: 'error', description: `❌ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} NO COINCIDEN!!`});
-        } else {
-            console.log(`${CYAN}- EL NUMERO DE CARACTERES CON STATUS = ${status.toUpperCase()} COINCIDEN!! --${NC}`);
-            test.info().annotations.push({type: 'info', description: `✅ EL NUMERO DE CARACTERES STATUS = ${status.toUpperCase()} COINCIDEN!!`});
-        }
-    }
+    });
 }
 
 test.describe('Desafio FRT Marzo 2025', () => {
