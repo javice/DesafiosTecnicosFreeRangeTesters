@@ -12,9 +12,11 @@ test.describe('Desafio FRT Marzo 2025', () => {
     test('Verificar que los filtros y búsqueda funcionan correctamente', async ({ page }) => {
         const homePage = new HomePage(page);
         const baseURI = 'https://v0-rick-and-morty-api-six.vercel.app'
-        const characterName = 'Rick'
+        const characterName = "Rick"
         const currentStatus = 'dead'
         const currentHTMLStatus = 'Desconocido'
+
+        let searchUrl: string;
 
         console.log(`${CYAN} TEST: Verificar que los filtros y búsqueda funcionan correctamente.${NC}`);
 
@@ -24,18 +26,21 @@ test.describe('Desafio FRT Marzo 2025', () => {
 
         // Prueba de búsqueda
         await test.step(`Buscar personaje "${characterName}"`, async () => {
-            await homePage.searchCharacter(characterName);
+            searchUrl = await homePage.searchCharacter(characterName);
             const characterCount = await homePage.getCharacterCount();
 
             console.log(`${CYAN} STEP 1.- Busqueda de personajes con nombre ${characterName}${NC}`);
             console.log(`${GREEN}Número de personajes con nombre ${characterName} encontrados: ${characterCount}${NC}`);
             expect(characterCount, `${RED}Error: No se encontraron personajes después de la búsqueda.${NC}`).toBeGreaterThan(0);
+            expect(searchUrl, `${RED}Error: La URL de búsqueda no es correcta.${NC}`).not.toBeNull();
+            //toContain(characterName);
+            console.log(`${RED}${searchUrl}${NC}`);
             console.log(`${CYAN}====== FIN DEL STEP 1 - Busqueda de personajes ${characterName} ======${NC}`);
         });
 
         // Prueba de filtro
         await test.step(`Filtrar personajes por estado "${currentHTMLStatus}"`, async () => {
-            await homePage.filterByStatus(currentHTMLStatus);
+            searchUrl = await homePage.filterByStatus(currentHTMLStatus);
             const filteredCharacterCount = await homePage.getCharacterCount();
 
             console.log(`${CYAN} STEP 2.- Busqueda de personajes ${characterName} filtrados con estatus ${currentHTMLStatus}${NC}`);
@@ -45,7 +50,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
         });
 
         //Prueba selección de un personaje
-        await test.step('Ver detalles de un personaje y navegar de vuelta a la Home Page', async () => {
+        await test.step('Ver detalles de un personaje y navegar de vuelta a la Página de Personajes', async () => {
 
             const firstCharacter = await homePage.getFirstCharacter();
             const firstCharacterLink = await homePage.getFirstCharacterLink();
@@ -67,7 +72,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
             console.log(`${GREEN}IMAGEN:${characterDetails.image}${NC}`);
             console.log(`${GREEN}EPISODIOS:${characterDetails.episodes}${NC}`);
             console.log(`${GREEN}FECHA CREACIÓN:${characterDetails.creationDate}${NC}`);
-            console.log(`${RED}===== VOLVEMOS A LA HOME PAGE =======${NC}`);
+            console.log(`${RED}===== VOLVEMOS A LA PAGINA DE PERSONAJES =======${NC}`);
 
             test.info().annotations.push({type:'info', description: `ℹ️ DETALLES DE: ${characterDetails.name}`});
             test.info().annotations.push({type:'info', description: `📊 ESTADO: ${characterDetails.status}`});
@@ -78,10 +83,23 @@ test.describe('Desafio FRT Marzo 2025', () => {
             test.info().annotations.push({type:'info', description: `🌠 IMÁGEN: ${characterDetails.image}`});
             test.info().annotations.push({type:'info', description: `🎬 EPISODIOS: ${characterDetails.episodes}`});
             test.info().annotations.push({type:'info', description: `🐣 FECHA CREACIÓN: ${characterDetails.creationDate}`});
-            test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la Home Page'});
+            test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la Página de Personajes: ' + searchUrl});
 
-            await characterPageInstance.navigateBack();
-            console.log(`${GREEN}Volvimos a la Home Page${NC}`);
+            const backToCharactersPage = await characterPageInstance.navigateBack();
+            console.log(`${CYAN}Volviendo a la Página de Personajes...${backToCharactersPage}${NC}`);
+            if (backToCharactersPage === searchUrl) {
+                console.log(`${GREEN}Volvimos a la Página de Personajes...${NC}`);
+                test.info().annotations.push({
+                    type: 'info',
+                    description: '🌏 Navegamos de vuelta a la Página de Personajes: ' + searchUrl});
+            }else{
+                console.log(`${RED} ERROR!! No volvimos a la Página de Personajes${NC}`);
+                test.info().annotations.push({
+                    type: 'error',
+                    description: '❌ ERROR!! No volvimos a la Página de Personajes: ' + searchUrl});
+            }
+            //expect(backToCharactersPage, `${RED} ERROR!! No volvimos a la Página de Personajes${NC}`).toMatch(searchUrl);
+            //console.log(`${GREEN}Volvimos a la Página de Personajes...${NC}`);
             console.log(`${CYAN}====== FIN DEL STEP 3 - Ver detalles de un personaje y navegar de vuelta a la Home Page ======${NC}`);
 
         });

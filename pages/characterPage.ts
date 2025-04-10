@@ -33,10 +33,13 @@ class CharacterPage {
         await this.page.waitForLoadState('networkidle')
     }
 
-    async navigateBack(): Promise<void> {
+    async navigateBack(): Promise<string> {
         const homeUrl = await this.btnBack.getAttribute("href")
-        test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la URL'});
+        test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la URL: ' + homeUrl});
         await this.btnBack.click();
+        await this.page.waitForLoadState('networkidle');
+        await this.page.waitForTimeout(1000);
+        return this.page.url();
     }
 
 
