@@ -31,6 +31,26 @@ class HomePage {
         }
     }
 
+    async evaluateCharacterSpecies(): Promise<void> {
+        const cardsCount = await this.characterCards.count();
+        let allHumans = true;
+
+        for (let i = 0; i < cardsCount; i++) {
+            const speciesLocator = this.characterCards.nth(i).locator('span.text-sm.text-gray-300');
+            const speciesText = await speciesLocator.textContent();
+
+            if (speciesText !== 'Human') {
+                allHumans = false;
+                break;
+            }
+        }
+
+        if (allHumans) {
+            test.info().annotations.push({ type: 'error', description: '🐞Todos los personajes están marcados como Human' });
+        }
+    }
+
+
     async searchCharacter(name: string): Promise<string> {
         await this.searchInput.fill(name);
         await this.page.keyboard.press('Enter');

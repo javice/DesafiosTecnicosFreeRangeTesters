@@ -12,7 +12,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
     test('Verificar que los filtros y búsqueda funcionan correctamente', async ({ page }) => {
         const homePage = new HomePage(page);
         const baseURI = 'https://v0-rick-and-morty-api-six.vercel.app'
-        const characterName = "Rick"
+        const characterName = "Aqua Rick"
         const currentStatus = 'dead'
         const currentHTMLStatus = 'Desconocido'
 
@@ -47,6 +47,13 @@ test.describe('Desafio FRT Marzo 2025', () => {
             console.log(`${GREEN}Número de personajes con nombre ${characterName} filtrados por ${currentHTMLStatus} : ${filteredCharacterCount}${NC}`);
             expect(filteredCharacterCount, '${RED}Error: No se encontraron personajes después del filtrado.${NC}').toBeGreaterThan(0);
             console.log(`${CYAN}====== FIN DEL STEP 2 - Busqueda de personajes ${currentHTMLStatus} ======${NC}`);
+        });
+
+        // Prueba de evaluación de especies
+        await test.step(`Evaluar especies de personajes`, async () => {
+            console.log(`${CYAN} STEP 3.- Evaluar especies de personajes ${characterName}${NC}`);
+            await homePage.evaluateCharacterSpecies();
+            console.log(`${CYAN}====== FIN DEL STEP 3 - Evaluar especies de personajes ======${NC}`);
         });
 
         //Prueba selección de un personaje
@@ -85,6 +92,14 @@ test.describe('Desafio FRT Marzo 2025', () => {
             test.info().annotations.push({type:'info', description: `🐣 FECHA CREACIÓN: ${characterDetails.creationDate}`});
             test.info().annotations.push({type: 'info', description: '🌏 Navegamos de vuelta a la Página de Personajes: ' + searchUrl});
 
+            if (characterDetails.species.includes('Human -')) {
+                console.log(`${RED} ERROR!! Todos los personajes que NO son humanos están marcados al principio como Human${NC}`);
+                test.info().annotations.push({
+                    type: 'error',
+                    description: '🐞 ERROR!! Todos los personajes NO humanos están marcados al principio como Human: '});
+
+            }
+
             const backToCharactersPage = await characterPageInstance.navigateBack();
             console.log(`${CYAN}Volviendo a la Página de Personajes...${backToCharactersPage}${NC}`);
             if (backToCharactersPage === searchUrl) {
@@ -100,7 +115,7 @@ test.describe('Desafio FRT Marzo 2025', () => {
             }
             //expect(backToCharactersPage, `${RED} ERROR!! No volvimos a la Página de Personajes${NC}`).toMatch(searchUrl);
             //console.log(`${GREEN}Volvimos a la Página de Personajes...${NC}`);
-            console.log(`${CYAN}====== FIN DEL STEP 3 - Ver detalles de un personaje y navegar de vuelta a la Home Page ======${NC}`);
+            console.log(`${CYAN}====== FIN DEL STEP 4 - Ver detalles de un personaje y navegar de vuelta a la Home Page ======${NC}`);
 
         });
         console.log(`${CYAN}====================== FIN DEL TEST. =====================${NC}`);
