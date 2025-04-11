@@ -1,9 +1,14 @@
-import { PlaywrightTestConfig, devices } from '@playwright/test';
+import {PlaywrightTestConfig, devices} from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
     testDir: './tests',
-    timeout: 30000,
-    retries: 2,
+    testMatch: [
+        '**/tests/backendTests.spec.ts',
+        '**/tests/frontendTests.spec.ts',
+        '**/tests/formTests.spec.ts'
+    ],
+    timeout: 15000,
+    retries: 1,
     use: {
         headless: true,
         viewport: { width: 1280, height: 720 },

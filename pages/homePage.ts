@@ -31,17 +31,38 @@ class HomePage {
         }
     }
 
-    async searchCharacter(name: string): Promise<void> {
+    async evaluateCharacterSpecies(): Promise<void> {
+        const cardsCount = await this.characterCards.count();
+        let allHumans = true;
+
+        for (let i = 0; i < cardsCount; i++) {
+            const speciesLocator = this.characterCards.nth(i).locator('span.text-sm.text-gray-300');
+            const speciesText = await speciesLocator.textContent();
+
+            if (speciesText !== 'Human') {
+                allHumans = false;
+                break;
+            }
+        }
+
+        if (allHumans) {
+            test.info().annotations.push({ type: 'error', description: '🐞Todos los personajes están marcados como Human' });
+        }
+    }
+
+
+    async searchCharacter(name: string): Promise<string> {
         await this.searchInput.fill(name);
         await this.page.keyboard.press('Enter');
         test.info().annotations.push({type: 'info', description: '🔎 Buscamos el personaje: ' + name});
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(1000);
+        return this.page.url();
         //await this.page.goto(`https://v0-rick-and-morty-api-six.vercel.app/?name=${name}`)
     }
 
     //AÑADIMOS UNA ESPERA DE 1 SEGUNDO PARA QUE TERMINEN DE CARGARSE TODOS LOS ELEMENTOS DE LA WEB
-    async filterByStatus(status: string): Promise<void> {
+    async filterByStatus(status: string): Promise<string> {
 
         await this.filterDropdown.click();
         await this.page.waitForSelector('div[role="listbox"]');
@@ -51,6 +72,7 @@ class HomePage {
         test.info().annotations.push({type: 'info', description: '🔎 Filtramos por estado: ' + status});
         await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(1000);
+        return this.page.url();
 
     }
 
