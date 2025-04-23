@@ -1,11 +1,11 @@
-import {PlaywrightTestConfig, devices} from '@playwright/test';
+import { devices, defineConfig } from '@playwright/test';
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
     testDir: './tests',
     testMatch: [
-        '**/tests/backendTests.spec.ts',
-        '**/tests/frontendTests.spec.ts',
-        '**/tests/formTests.spec.ts'
+        '**/tests/test_01_backendTests.spec.ts',
+        '**/tests/test_02_frontendTests.spec.ts',
+        '**/tests/test_03_formTests.spec.ts'
     ],
     timeout: 15000,
     retries: 1,
@@ -17,8 +17,8 @@ const config: PlaywrightTestConfig = {
         trace: 'retain-on-failure',
     },
     reporter: [
-        ['list'], // Reporter en la terminal
-        ['html', { outputFolder: 'playwright-report' }], // Reporter HTML
+        ['list'],
+        ['html', { outputFolder: 'playwright-report' }],
     ],
     projects: [
         {
@@ -26,6 +26,4 @@ const config: PlaywrightTestConfig = {
             use: { ...devices['Desktop Chrome'] },
         },
     ],
-};
-
-export default config;
+});

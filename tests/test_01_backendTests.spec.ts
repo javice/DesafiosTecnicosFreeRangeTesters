@@ -66,7 +66,7 @@ async function compareAPIWithFrontend(page: any, url: string, apiCount: number, 
     console.log(`Página actual: ${currentPage}`);
     console.log(`Total de páginas: ${totalPages}`);
 
-    test.step('Comparamos el número de personajes de la API con el Frontend', async () => {
+    await test.step('Comparamos el número de personajes de la API con el Frontend', async () => {
         console.log(`${CYAN}API VS FRONTEND. STATUS = ${status.toUpperCase()} ${NC}`);
         console.log(`${GREEN}- Caracteres Totales API: ${apiCount}${NC}`);
         test.info().annotations.push({type: 'info', description: `✅ STATUS = ${status.toUpperCase()} OK`});
