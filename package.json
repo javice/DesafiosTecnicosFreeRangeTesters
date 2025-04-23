@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui"
+    "test:ordered": "npx playwright test tests/test_01_backendTests.spec.ts tests/test_02_frontendTests.spec.ts tests/test_03_formTests.spec.ts --workers=1",
+    "test:headed": "npx playwright test tests/test_01_backendTests.spec.ts tests/test_02_frontendTests.spec.ts tests/test_03_formTests.spec.ts --workers=1 --headed",
+    "test:ui": "npx playwright test tests/test_01_backendTests.spec.ts tests/test_02_frontendTests.spec.ts tests/test_03_formTests.spec.ts --workers=1 --ui"
   },
   "keywords": [],
   "author": "",

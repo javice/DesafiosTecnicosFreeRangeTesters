@@ -26,24 +26,46 @@ Igualmente, se actualizarán los comandos del Makefile para ejecutar únicamente
   ```
 �‍ Ejecución de Pruebas
 
-Para ejecutar todas las pruebas, usa el siguiente comando:
+Puedes ejecutar los tests automatizados usando los siguientes comandos del Makefile:
 
 ```bash
-npx playwright test
+make test
 ```
 
-Para ejecutar pruebas específicas (por ejemplo, solo las pruebas de frontend):
+Ejecutar todas las pruebas con el navegador visible (modo headed):
 
 ```bash
-npx playwright test tests/frontendTests.spec.js
+make test-headed
 ```
 
 Para ejecutar las pruebas en modo interfaz gráfica (UI):
 
 ```bash
-npx playwright test --ui
+make test-ui
 ```
 
+Generar y abrir el reporte HTML de los tests:
+
+```bash
+make report
+```
+Limpiar los reportes generados:
+
+```bash
+make clean
+```
+
+---
+📑 Orden de ejecución de los tests en Playwright
+Para asegurar un orden específico de ejecución de los archivos de test, los archivos dentro de la carpeta /tests han sido renombrados con un prefijo numérico, por ejemplo:
+
+test_01_backendTests.spec.ts
+test_02_frontendTests.spec.ts
+test_03_formTests.spec.ts
+De este modo, al ejecutar los tests con un solo worker (--workers=1), Playwright los ejecuta en orden alfabético, respetando el orden deseado y generando un reporte HTML unificado.
+
+Recomendación:
+Si necesitas agregar nuevos archivos de test y mantener un orden de ejecución, utiliza el mismo esquema de prefijos numéricos.
 ---
 
 ## 📂 Estructura del Proyecto

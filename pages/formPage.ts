@@ -1,4 +1,5 @@
 // pages/FormPage.ts
+// pages/FormPage.ts
 import { Page, Locator, test } from '@playwright/test';
 
 interface MandatoryFields {
@@ -57,41 +58,51 @@ class FormPage {
     async navigate(): Promise<void> {
         await this.page.goto(this.url);
     }
-
-    async reloadPage(options: { timeout?: number; waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit' }): Promise<void> {
-        await this.page.reload(options);
-    }
-
-
-
-    // Rellenamos los campos obligarotios.
-    // Si el campo phone no es un número, mostramos un mensaje de advertencia.
-    // Si el campo phone no tiene al menos 9 caracteres numéricos, mostramos un mensaje de advertencia.
-    // Si el campo phone no caracteres numéricos, la página web NO contempla este ERROR
-    // y da por válido el campo.
+    /**
+     * Rellenamos los campos obligatorios del formulario.
+     * @param data Un objeto con los valores de los campos a rellenar.
+     *
+     * Si el campo es el de teléfono y no tiene al menos 9 caracteres numéricos
+     * se lanza una advertencia y se agrega una anotación de tipo "warning" al test.
+     * La página web no contempla este error y da por válido el campo.
+     *
+     * Se lanza un mensaje de info en la consola y se agrega una anotación de tipo
+     * "info" al test con el mensaje "✅ Campo: <nombre del campo> rellenado correctamente: <valor del campo>".
+     */
     async fillMandatoryFields(data: FieldData): Promise<void> {
         const keys = Object.keys(data);
         for (const key of keys) {
-            const value = data[key];
-            if (key === 'phone' && !/^\d+$/.test(value)) {
-                const warningMessage = '❌ Advertencia: El número de telefono debe tener AL MENOS 9 caracteres numéricos.\nℹ️ La página web NO contempla este ERROR y da por válido el campo.  ';
-                console.warn(warningMessage);
-                test.info().annotations.push({type: 'warning', description: warningMessage});
-            }
-            const fieldOk = '✅ Campo: ' + key + ' rellenado correctamente: ' + value;
-            console.log(fieldOk);
-            test.info().annotations.push({type: 'info', description: fieldOk});
-            await this.mandatoryFields[key as keyof MandatoryFields].fill(value);
+            await test.step(`Rellenar campo obligatorio: ${key}`, async () => {
+                const value = data[key];
+                if (key === 'phone' && !/^\d+$/.test(value)) {
+                    const warningMessage = '❌ Advertencia: El número de telefono debe tener AL MENOS 9 caracteres numéricos.\nℹ️ La página web NO contempla este ERROR y da por válido el campo.';
+                    console.warn(warningMessage);
+                    test.info().annotations.push({type: 'warning', description: warningMessage});
+                }
+                const fieldOk = '✅ Campo: ' + key + ' rellenado correctamente: ' + value;
+                console.log(fieldOk);
+                test.info().annotations.push({type: 'info', description: fieldOk});
+                await this.mandatoryFields[key as keyof MandatoryFields].fill(value);
+            });
         }
     }
 
 
-    // Rellenamos los campos no obligatorios
+
+    /**
+     * Rellenamos los campos NO obligatorios del formulario.
+     * @param data Un objeto con los valores de los campos a rellenar.
+     */
     async fillNonMandatoryFields(data: FieldData): Promise<void> {
         const keys = Object.keys(data);
         for (const key of keys) {
-            const value = data[key];
-            await this.nonMandatoryFields[key as keyof NonMandatoryFields].fill(value);
+            await test.step(`Rellenar campo no obligatorio: ${key}`, async () => {
+                const value = data[key];
+                await this.nonMandatoryFields[key as keyof NonMandatoryFields].fill(value);
+                const fieldOk = '✅ Campo opcional: ' + key + ' rellenado correctamente: ' + value;
+                console.log(fieldOk);
+                test.info().annotations.push({type: 'info', description: fieldOk});
+            });
         }
     }
 
@@ -100,8 +111,17 @@ class FormPage {
     }
 
 
-    // Obtenemos los mensajes de error
-    // Si hay un mensaje de error, lo mostramos por consola y lo añadimos a la información del test
+
+
+    /**
+     * Retrieves all error messages from the form.
+     *
+     * The method first retrieves all inner text from elements with the class
+     * `-form-item-message`. Then, it logs each error message as an error and
+     * adds it to the test annotations.
+     *
+     * @returns An array of strings containing all error messages.
+     */
     async getErrorMessages(): Promise<string[]> {
         const errorMessages = await this.errorMessages.allInnerTexts();
         for (const errorMessage of errorMessages) {
@@ -112,9 +132,15 @@ class FormPage {
         return errorMessages;
     }
 
-    // Obtenemos el mensaje de éxito
-    // Si el mensaje de éxito es '¡Registro exitoso!', lo mostramos por consola
-    // y lo añadimos a la información del test
+
+    /**
+     * Obtiene el mensaje de éxito del formulario.
+     * Si el mensaje es "¡Registro exitoso!", se considera un éxito y se muestra un
+     * mensaje de info en la consola y se añade una anotación de tipo "info" al test.
+     * Si el mensaje no es "¡Registro exitoso!", se considera un error y se muestra un
+     * mensaje de error en la consola y se añade una anotación de tipo "error" al test.
+     * @returns El mensaje de éxito del formulario.
+     */
     async getSuccessMessage(): Promise<string> {
         const remotePageSuccessMessage = await this.successMessage.innerText();
         if (remotePageSuccessMessage === '¡Registro exitoso!') {

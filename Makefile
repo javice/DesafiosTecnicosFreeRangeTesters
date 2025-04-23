@@ -5,6 +5,7 @@ RED=\033[0;31m
 YELLOW=\033[0;33m
 NC=\033[0m # No Color
 
+
 # Comandos principales
 .PHONY: install test test-headed test-ui report visual-update visual-test clean
 
@@ -15,19 +16,21 @@ install:
 
 test:
 	@echo "${CYAN}Ejecutando todas las pruebas...${NC}"
-	npx playwright test --workers=1
+	npm run test:ordered
 
 test-headed:
 	@echo "${CYAN}Ejecutando pruebas en modo headed...${NC}"
-	npx playwright test --headed --workers=1
+	npm run test:headed
 
 test-ui:
 	@echo "${CYAN}Ejecutando pruebas en modo UI...${NC}"
-	npx playwright test --ui
+	npm run test:ui
 
 test-verbose:
 	@echo "${CYAN}Ejecutando pruebas con mensajes detallados...${NC}"
-	npx playwright test --workers=1
+	npx playwright test tests/backendTests.spec.ts --workers=1 --reporter=list && \
+	npx playwright test tests/frontendTests.spec.ts --workers=1 --reporter=list && \
+	npx playwright test tests/formTests.spec.ts --workers=1 --reporter=list
 
 report:
 	@echo "${CYAN}Generando y abriendo el reporte HTML...${NC}"
